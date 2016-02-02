@@ -2,8 +2,8 @@ package com.juanpi.judis.command;
 
 import java.util.List;
 
+import com.juanpi.judis.connection.Connection;
 import com.juanpi.judis.io.RedisInputStream;
-import com.juanpi.judis.io.RedisOutputStream;
 import com.juanpi.judis.util.ProtocolUtil;
 import com.juanpi.judis.util.TypeUtil;
 
@@ -20,7 +20,7 @@ public abstract class AbstractCommand<T> implements Command<T>{
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public T execute(RedisOutputStream outputStream,RedisInputStream inputStream, Commands command,Object... arguments) {
+	public T execute(Connection connection, Commands command,Object... arguments) {
 		T result = null;
 		try {
 			String commandString = command.name();
@@ -51,10 +51,9 @@ public abstract class AbstractCommand<T> implements Command<T>{
 					argumentBytes[i] = TypeUtil.stringToBytes(arguments[i].toString());
 				}
 			}
-			ProtocolUtil.sendCommand(outputStream, TypeUtil.stringToBytes(commandString), argumentBytes);
-			ProtocolUtil.close(outputStream);
-			
-			result = (T) receive(inputStream, command, arguments);
+			ProtocolUtil.sendCommand(connection.getRedisOutputStream(), TypeUtil.stringToBytes(commandString), argumentBytes);
+			connection.getRedisOutputStream().flush();
+			result = (T) receive(connection.getRedisInputStream(), command, arguments);
 		} catch (Exception e) {
 			throw new RuntimeException("command execute failed!", e);
 		}

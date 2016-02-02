@@ -1,7 +1,6 @@
 package com.juanpi.judis.command;
 
-import com.juanpi.judis.io.RedisInputStream;
-import com.juanpi.judis.io.RedisOutputStream;
+import com.juanpi.judis.connection.Connection;
 
 /**
  *
@@ -12,6 +11,6 @@ import com.juanpi.judis.io.RedisOutputStream;
  */
 public interface Command<T> {
 	
-	public T execute(RedisOutputStream outputStream,RedisInputStream inputStream,Commands command,Object... arguments);
+	public T execute(Connection connection,Commands command,Object... arguments);
 	
 }

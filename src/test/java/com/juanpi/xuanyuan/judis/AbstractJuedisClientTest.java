@@ -1,12 +1,11 @@
 package com.juanpi.xuanyuan.judis;
 
 import java.io.IOException;
-import java.net.Socket;
 import java.net.UnknownHostException;
 
 import org.junit.Before;
-import org.junit.Test;
 
+import com.juanpi.judis.connection.Connection;
 import com.juanpi.judis.io.RedisInputStream;
 import com.juanpi.judis.io.RedisOutputStream;
 
@@ -18,13 +17,13 @@ import com.juanpi.judis.io.RedisOutputStream;
 public class AbstractJuedisClientTest {
 	
 	
-	protected RedisOutputStream outputStream;
-	protected RedisInputStream inputStream;
+	protected Connection connect;
 	
 	@Before
 	public void before() throws UnknownHostException, IOException{
-		Socket socket = new Socket("192.168.143.31", 6379);
-		outputStream = new RedisOutputStream(socket.getOutputStream());
-		inputStream = new RedisInputStream(socket.getInputStream());
+		
+		connect = new Connection("192.168.143.31", 6379);
+		connect.connect();
+		
 	}
 }

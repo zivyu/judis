@@ -13,6 +13,13 @@ import com.juanpi.judis.io.RedisOutputStream;
  */
 public abstract class ProtocolUtil {
 	
+	
+	public static final String DEFAULT_HOST = "localhost";
+	
+	public static final int DEFAULT_PORT = 6379;
+	
+	public static final int DEFAULT_TIMEOUT = 2000;
+	
 	private static final int defaultNumber = 1;
 
 	private static final String trueResultPrefix = "+";
@@ -45,14 +52,6 @@ public abstract class ProtocolUtil {
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
-		}
-	}
-	
-	public static void close(RedisOutputStream outputStream){
-		try {
-			outputStream.flush();
-		} catch (IOException e) {
-			throw new RuntimeException("outputStream close exception",e);
 		}
 	}
 

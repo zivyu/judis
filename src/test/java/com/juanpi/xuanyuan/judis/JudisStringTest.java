@@ -21,7 +21,6 @@ public class JudisStringTest extends AbstractJuedisClientTest{
 	@Test
 	public void testAppend() throws IOException {
 		StringCommand command = new StringCommand();
-		System.out.println(command.execute(outputStream, inputStream, Commands.get, "foo"));
-		Assert.assertEquals("bar",command.execute(outputStream, inputStream, Commands.get, "foo"));
+		Assert.assertEquals("bar",command.execute(connect, Commands.get, "foo"));
 	}
 }
