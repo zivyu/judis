@@ -12,7 +12,7 @@ import com.juanpi.judis.util.ProtocolUtil;
 public class BooleanCommand extends AbstractCommand<Boolean>{
 
 	@Override
-	protected Object receive(RedisInputStream inputStream, Commands command,
+	protected Boolean receive(RedisInputStream inputStream, Commands command,
 			Object... arguments) throws Exception {
 		String response = inputStream.readLine();
 		if (ProtocolUtil.isOk(response)) {

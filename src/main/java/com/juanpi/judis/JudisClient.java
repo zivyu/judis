@@ -21,6 +21,8 @@ public interface JudisClient {
 	public String get(String key);
 
 	public boolean set(String key, Object value);
+	
+	
 
 
 

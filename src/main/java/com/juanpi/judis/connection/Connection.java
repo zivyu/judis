@@ -23,7 +23,7 @@ public class Connection {
 	private RedisInputStream redisInputStream;
 	private RedisOutputStream redisOutputStream;
 	private int connectionTimeout = ProtocolUtil.DEFAULT_TIMEOUT;
-	 private int soTimeout = ProtocolUtil.DEFAULT_TIMEOUT;
+	private int soTimeout = ProtocolUtil.DEFAULT_TIMEOUT;
 	
 	public Connection(){
 	}
@@ -65,7 +65,6 @@ public class Connection {
 			}catch(Exception e){
 				 throw new RuntimeException("socket close failed !",e);
 			}
-			
 		}
 	}
 	
