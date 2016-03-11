@@ -1,4 +1,4 @@
-package com.juanpi.xuanyuan.judis;
+package com.juanpi.judis;
 
 import java.io.IOException;
 import java.util.List;
