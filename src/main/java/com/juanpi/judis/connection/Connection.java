@@ -30,11 +30,13 @@ public class Connection {
 	
 	public Connection(final String host){
 		this.host = host;
+		connect();
 	}
 	
 	public Connection(final String host, final int port){
 		this.host = host;
 		this.port = port;
+		connect();
 	}
 	
 	

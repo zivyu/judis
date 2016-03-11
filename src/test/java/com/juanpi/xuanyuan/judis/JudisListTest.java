@@ -3,23 +3,17 @@ package com.juanpi.xuanyuan.judis;
 import java.io.IOException;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
-import com.juanpi.judis.command.BooleanCommand;
 import com.juanpi.judis.command.Commands;
 import com.juanpi.judis.command.ListResultCommand;
-import com.juanpi.judis.command.StringCommand;
-
-
 
 /**
  *
  * @author zuqiang
- * @data 2016年2月1日  下午5:47:51
+ * @data 2016年3月8日  下午6:11:02
  */
-public class JudisStringTest extends AbstractJuedisClientTest{
+public class JudisListTest  extends AbstractJuedisClientTest{
 	
 	@Test
 	public void testAppend() throws IOException {
@@ -28,12 +22,12 @@ public class JudisStringTest extends AbstractJuedisClientTest{
 		//System.out.println(command.execute(connect, Commands.get, "ss"));
 		
 		ListResultCommand command = new ListResultCommand();
-		List<String> list = command.execute(pool.getConnection(), Commands.hmget, "pet","dog","cat","sss","pig");
+		List<String> list = command.execute(pool.getConnection(), Commands.cluster, "slots");
 		System.out.println(list.size());
 		for(int i = 0;i<list.size();i++){
 			System.out.println(list.get(i));
 		}
 		
 	}
+	
 }
-

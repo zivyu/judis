@@ -4,6 +4,8 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.juanpi.judis.config.JudisProperty;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -14,30 +16,42 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class ConnectionPool {
 	
-	private LinkedBlockingDeque<Connection> idleConnection; 
+	private final Logger log = Logger.getLogger(ConnectionPool.class);
+	
+	private LinkedBlockingDeque<Connection> idleConnection;
 	
 	private final AtomicLong createCount = new AtomicLong(0);
 	
-	private int maxTotal = 8;
+	private String host;
 	
-	private int minIdle = 0;
+	private int port;
 	
-	private int maxIdle = 8;
+	private int maxTotal;
 	
-	private long maxWaitMillis = -1L;
+	private int minIdle;
 	
-	public ConnectionPool(String host,int port){
+	private int maxIdle;
+	
+	private long maxWaitMillis;
+	
+	
+	public ConnectionPool(JudisProperty property){
+		
+		//初始化一些参数
+		this.maxTotal = property.getMaxTotal();
+		this.minIdle = property.getMinIdle();
+		this.maxIdle = property.getMaxIdle();
+		this.maxWaitMillis = property.getMaxWaitMillis();
+		this.host = property.getHost();
+		this.port = property.getPort();
+		
+		//
 		idleConnection = new LinkedBlockingDeque<Connection>();
+		
+		//确保小空闲
 		ensureIdle(minIdle);
-	}
-	
-	public ConnectionPool(String host,int port,int maxTotal,int minIdle,int maxIdle,long maxWaitMillis){
-		idleConnection = new LinkedBlockingDeque<Connection>();
-		this.maxTotal = maxTotal;
-		this.minIdle = minIdle;
-		this.maxIdle = maxIdle;
-		this.maxWaitMillis = maxWaitMillis;
-		ensureIdle(minIdle);
+		
+		log.info("init connectPool finish !!!");
 	}
 	
 	
@@ -70,7 +84,7 @@ public class ConnectionPool {
 			createCount.decrementAndGet();
 			return null;
 		}
-		Connection connection = new Connection();
+		Connection connection = new Connection(host,port);
 		return connection;
 	}
 	
@@ -87,11 +101,5 @@ public class ConnectionPool {
 			idleConnection.add(connection);
 		}
 	}
-	
-	
-	public void returnConnection(){
-		
-	}
-	
 	
 }

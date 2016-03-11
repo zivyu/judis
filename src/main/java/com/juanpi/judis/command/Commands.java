@@ -52,6 +52,8 @@ public enum Commands {
 	bgrewriteaof,bgsave,client_getname,client_kill,client_list,client_setname
 	,config_get,config,resetstat,config_rewrite,config_set,dbsize,debug_object
 	,debug_segfault,flushall,flushdb,info,lastsave,monitor,psync,save,shutdown
-	,slaveof,showlog,sync,time
+	,slaveof,showlog,sync,time,
+	
+	cluster
 	
 }

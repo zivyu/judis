@@ -5,9 +5,9 @@ import java.net.UnknownHostException;
 
 import org.junit.Before;
 
+import com.juanpi.judis.config.JudisProperty;
 import com.juanpi.judis.connection.Connection;
-import com.juanpi.judis.io.RedisInputStream;
-import com.juanpi.judis.io.RedisOutputStream;
+import com.juanpi.judis.connection.ConnectionPool;
 
 /**
  *
@@ -17,13 +17,20 @@ import com.juanpi.judis.io.RedisOutputStream;
 public class AbstractJuedisClientTest {
 	
 	
-	protected Connection connect;
+	protected ConnectionPool pool;
 	
 	@Before
 	public void before() throws UnknownHostException, IOException{
 		
-		connect = new Connection("192.168.143.31", 6379);
-		connect.connect();
+		JudisProperty property = new JudisProperty();
+		property.setHost("192.168.143.31");
+		property.setPort(6379);
+		property.setMaxIdle(8);
+		property.setMaxTotal(8);
+		property.setMinIdle(5);
+		property.setMaxWaitMillis(-1L);
+		
+		pool = new ConnectionPool(property);
 		
 	}
 }
