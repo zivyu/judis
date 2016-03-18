@@ -23,12 +23,6 @@ public class AbstractJuedisClientTest {
 	public void before() throws UnknownHostException, IOException{
 		
 		JudisProperty property = new JudisProperty();
-		property.setHost("192.168.143.31");
-		property.setPort(6379);
-		property.setMaxIdle(8);
-		property.setMaxTotal(8);
-		property.setMinIdle(5);
-		property.setMaxWaitMillis(-1L);
 		
 		pool = new ConnectionPool(property);
 		

@@ -1,11 +1,15 @@
 package com.juanpi.judis.connection;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.juanpi.judis.config.JudisProperty;
 import org.apache.log4j.Logger;
+
+import com.juanpi.judis.config.JudisProperty;
 
 /**
  *
@@ -18,9 +22,13 @@ public class ConnectionPool {
 	
 	private final Logger log = Logger.getLogger(ConnectionPool.class);
 	
-	private LinkedBlockingDeque<Connection> idleConnection;
+	private LinkedBlockingDeque<ConnectionProxy> idleConnection;
+	
+	private LinkedBlockingDeque<ConnectionProxy> useConnection;
 	
 	private final AtomicLong createCount = new AtomicLong(0);
+	
+	private CountDownLatch count = new CountDownLatch(0);
 	
 	private String host;
 	
@@ -42,11 +50,12 @@ public class ConnectionPool {
 		this.minIdle = property.getMinIdle();
 		this.maxIdle = property.getMaxIdle();
 		this.maxWaitMillis = property.getMaxWaitMillis();
-		this.host = property.getHost();
+		this.host = property.getHost(); 
 		this.port = property.getPort();
 		
 		//
-		idleConnection = new LinkedBlockingDeque<Connection>();
+		idleConnection = new LinkedBlockingDeque<ConnectionProxy>();
+		useConnection = new LinkedBlockingDeque<ConnectionProxy>();
 		
 		//确保小空闲
 		ensureIdle(minIdle);
@@ -57,49 +66,67 @@ public class ConnectionPool {
 	
 	public Connection getConnection(){
 		Connection connection = null;
-		connection = idleConnection.pollFirst();
+		ConnectionProxy  connProxy = idleConnection.pollFirst();
 		if(connection == null){
-			connection = create();
+			connProxy = create();
 		}
-		if(connection == null){
+		if(connProxy == null){
 			if(maxWaitMillis < 0){
-				connection = idleConnection.pollFirst();
+				connProxy = idleConnection.pollFirst();
 			}else{
 				try {
-					connection = idleConnection.pollFirst(maxWaitMillis, TimeUnit.MILLISECONDS);
+					connProxy = idleConnection.pollFirst(maxWaitMillis, TimeUnit.MILLISECONDS);
 				} catch (InterruptedException e) {
 					throw new RuntimeException("Queue exception",e);
 				}
 			}
 		}
-		if(connection == null){
+		if(connProxy == null){
 			throw new RuntimeException("Timeout waiting for idle object");
 		}
+		connection = connProxy.getConnection();
+		connProxy.setInUse(true);
 		return connection;
 	}
 	
-	private Connection create(){
+	private ConnectionProxy create(){
 		long newCreateCount = createCount.incrementAndGet();
 		if(newCreateCount>maxTotal){
 			createCount.decrementAndGet();
 			return null;
 		}
-		Connection connection = new Connection(host,port);
-		return connection;
+		ConnectionProxy connProxy = new ConnectionProxy(new Connection(host,port),false);
+		idleConnection.add(connProxy);
+		useConnection.add(connProxy);
+		return connProxy;
 	}
-	
 	
 	private void ensureIdle(int number){
 		if(number<1){
 			return;
 		}
 		while(idleConnection.size()<minIdle){
-			Connection connection = create();
-			if(connection == null){
+			ConnectionProxy connProxy = create();
+			if(connProxy == null){
 				break;
 			}
-			idleConnection.add(connection);
 		}
 	}
+	
+	class CheckIdle implements Runnable{
+
+		@Override
+		public void run() {
+			while(true){
+				try {
+					count.await();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+	}
+	
 	
 }

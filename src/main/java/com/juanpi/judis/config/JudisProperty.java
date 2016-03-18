@@ -43,7 +43,7 @@ public class JudisProperty {
 				Properties props = new Properties();
 				props.load(in);
 				setProperties(props);  
-			} catch (IOException e) {
+			} catch (Exception e) {
 				LOG.error("Unable to find or load  judis.properties !!! ",e);
 				throw new RuntimeException("Unable to find or load  judis.properties !!!",e);
 			}
