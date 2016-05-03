@@ -7,7 +7,15 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.apache.log4j.Logger;
+
+
+
+
+
+
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.juanpi.judis.config.JudisProperty;
 
@@ -20,7 +28,7 @@ import com.juanpi.judis.config.JudisProperty;
  */
 public class ConnectionPool {
 	
-	private final Logger log = Logger.getLogger(ConnectionPool.class);
+	private final Logger log = LoggerFactory.getLogger(ConnectionPool.class);
 	
 	private LinkedBlockingDeque<ConnectionProxy> idleConnection;
 	

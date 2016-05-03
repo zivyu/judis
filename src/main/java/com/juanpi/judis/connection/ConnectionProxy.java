@@ -4,7 +4,9 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  *	Connection的代理类
@@ -14,7 +16,7 @@ import org.apache.log4j.Logger;
  */
 @SuppressWarnings("unused")
 public class ConnectionProxy implements InvocationHandler{
-	private final static Logger LOG = Logger.getLogger(ConnectionProxy.class);
+	private final static Logger LOG = LoggerFactory.getLogger(ConnectionProxy.class);
 	
 	private Connection connection;
 	private boolean inUse = false;
